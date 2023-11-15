@@ -16,6 +16,8 @@ import java.util.logging.Logger;
  */
 public class PersonaJDBC {
 
+    private Connection conexionTrnsaccional;
+    
     private static final String SQL_SELECT = "SELECT id_persona, nombre, apellido, email, telefono FROM persona";
     private static final String SQL_INSERT = "INSERT INTO persona (nombre, apellido, email, telefono) VALUES (?, ?, ?, ?)";
     private static final String SQL_UPDATE = "UPDATE persona SET nombre=?, apellido=?, email=?, telefono=? WHERE id_persona=?";
@@ -26,6 +28,17 @@ public class PersonaJDBC {
     private final String COLUMN_APELLIDO = "apellido";
     private final String COLUMN_EMAIL = "email";
     private final String COLUMN_TELEFONO = "telefono";
+    
+    
+    public PersonaJDBC()
+    {
+        
+    }
+    
+    public PersonaJDBC(Connection conexionTransac)
+    {
+        conexionTrnsaccional = conexionTransac;
+    }
 
     public List<Persona> select() {
         String nombre;
@@ -40,7 +53,9 @@ public class PersonaJDBC {
         ResultSet rs = null;
 
         try {
-            conn = Conexion.getConnection();
+            
+            conn = conexionTrnsaccional != null ? conexionTrnsaccional : Conexion.getConnection();
+            
             stmt = conn.prepareStatement(SQL_SELECT);
             rs = stmt.executeQuery();
 
@@ -68,7 +83,9 @@ public class PersonaJDBC {
         finally{
             Conexion.close(rs);
             Conexion.close(stmt);
-            Conexion.close(conn);
+            
+            if(conexionTrnsaccional == null)
+                Conexion.close(conn);
         }
 
         return personas;
@@ -83,7 +100,9 @@ public class PersonaJDBC {
         int rows=0;
 
         try {
-            conn = Conexion.getConnection();
+            
+            conn = conexionTrnsaccional != null ? conexionTrnsaccional : Conexion.getConnection();
+            
             ps = conn.prepareStatement(SQL_INSERT);
             
             ps.setString(1, persona.getNombre());
@@ -103,7 +122,9 @@ public class PersonaJDBC {
         finally{
 
             Conexion.close(ps);
-            Conexion.close(conn);
+            
+            if(conexionTrnsaccional == null)
+                Conexion.close(conn);
         }
 
         return rows;
@@ -117,7 +138,9 @@ public class PersonaJDBC {
         int rows=0;
 
         try {
-            conn = Conexion.getConnection();
+            
+            conn = conexionTrnsaccional != null ? conexionTrnsaccional : Conexion.getConnection();
+            
             ps = conn.prepareStatement(SQL_UPDATE);
             
             ps.setString(1, persona.getNombre());
@@ -138,7 +161,9 @@ public class PersonaJDBC {
         finally{
 
             Conexion.close(ps);
-            Conexion.close(conn);
+            
+            if(conexionTrnsaccional == null)
+                Conexion.close(conn);
         }
 
         return rows;
@@ -152,7 +177,9 @@ public class PersonaJDBC {
         int rows=0;
 
         try {
-            conn = Conexion.getConnection();
+            
+            conn = conexionTrnsaccional != null ? conexionTrnsaccional : Conexion.getConnection();
+            
             ps = conn.prepareStatement(SQL_DELETE);
             
             ps.setInt(1, idPersona);
@@ -169,7 +196,9 @@ public class PersonaJDBC {
         finally{
 
             Conexion.close(ps);
-            Conexion.close(conn);
+            
+            if(conexionTrnsaccional == null)
+                Conexion.close(conn);
         }
 
         return rows;

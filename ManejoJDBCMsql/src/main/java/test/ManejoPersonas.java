@@ -22,10 +22,10 @@ public class ManejoPersonas {
         
         rows = personaData.insert(persona);
         
-        persona.setIdPersona(8);
-        rows = personaData.update(persona);
-        
-        personaData.delete(2);
+//        persona.setIdPersona(8);
+//        rows = personaData.update(persona);
+//        
+//        personaData.delete(2);
         
         var personas = personaData.select();
         
